@@ -1,5 +1,5 @@
-const Todo = require('./todo');
-const TodoList = require('./todolist');
+const Todo = require('../lib/todo');
+const TodoList = require('../lib/todolist');
 
 describe('TodoList', () => {
   let todo1;
@@ -96,7 +96,7 @@ describe('TodoList', () => {
   });
 
   // markAllDone
-  test("markDone marks all items in the list as done", () => {
+  test("markAllDone marks all items in the list as done", () => {
     list.markAllDone();
     expect(list.toArray().every(todo => todo.isDone())).toBe(true);
     expect(list.isDone()).toBe(true);
@@ -159,5 +159,45 @@ describe('TodoList', () => {
 
     expect(doneItems instanceof TodoList).toBe(true);
     expect(doneItems.toArray()).toEqual([todo1, todo2]);
+  });
+
+  // findByTitle
+  test("findByTitle returns the first todo item with a given title in a list", () => {
+    expect(list.findByTitle("Buy milk")).toEqual(todo1);
+  });
+
+  // allDone
+  test("allDone returns a new Todo list with all done todo items", () => {
+    todo1.markDone();
+    let doneTodos = list.allDone();
+    
+    expect(doneTodos instanceof TodoList).toBe(true);
+    expect(doneTodos.toArray()).toEqual([todo1]);
+  });
+
+   // allNotDone
+  test("allNotDone returns a new Todo list with all unfinished todo items", () => {
+    todo1.markDone();
+    let unfinishedTodos = list.allNotDone();
+    
+    expect(unfinishedTodos instanceof TodoList).toBe(true);
+    expect(unfinishedTodos.toArray()).toEqual([todo2, todo3]);
+  });
+
+  // markDone
+  test("markDone marks an item with a given title as done", () => {
+    list.markDone("Buy milk");
+    expect(todo1.isDone()).toBe(true);
+  });
+
+  // markAllUndone
+  test("markAllUndone marks all items in the list as not done", () => {
+    todo1.markDone();
+    todo2.markDone();
+    todo3.markDone();
+    list.markAllUndone();
+
+    expect(list.toArray().every(todo => !todo.isDone())).toBe(true);
+    expect(list.isDone()).toBe(false);
   });
 });
